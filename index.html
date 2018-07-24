@@ -16,11 +16,11 @@
     </head>
     <body>
         <canvas id="canv" width="400" height="400" style="background: #000;margin: 20px auto; display: block;"></canvas>
-        <button onclick="upclick()" style="width:50px;height:50px; margin: 0px auto; display: block;">↑</button>
+        <button onclick="upclick()" style="width:80px;height:80px; margin: 0px auto; display: block;">↑</button>
         <p align="center">
-        <button onclick="leftclick()" style="width:50px;height:50px">←</button>
-        <button onclick="downclick()" style="width:50px;height:50px">↓</button>
-        <button onclick="rightclick()" style="width:50px;height:50px">→</button>
+        <button onclick="leftclick()" style="width:80px;height:80px">←</button>
+        <button onclick="downclick()" style="width:80px;height:80px">↓</button>
+        <button onclick="rightclick()" style="width:80px;height:80px">→</button>
         </p>
         <script>
             var sn = [42, 41], dz=43, fx = 1, n, ctx = document.getElementById("canv").getContext("2d");
@@ -47,7 +47,7 @@
                 sn.unshift(n = sn[0] + fx);
                 if(sn.indexOf(n, 1) > 0 || n < 0 || n > 399 || fx == 1 && n % 20 ==0 || fx == -1 && n % 20 == 19){
                 alert("Game over!")
-                window.location.reload()
+                return window.location.reload()
                 }
                 draw(n, "pink")
                 if(n == dz){
