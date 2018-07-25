@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <style>
+        *{
+            margin: 0;
+        }
+        body{
+            overflow: hidden;
+        }
+    </style>
+    <title>DHC-Alpha</title>
+</head>
+<body onload="Initialize()">
+    <p>
+        <button onclick="Restart()">Restart</button>
+    </p>
+    <p align="center" style="margin">
+        <input></input>
+        <input></input>
+        <input></input>
+        <input></input>
+        <input></input>
+    </p>
+    <p align="center">
+            <input></input>
+            <input></input>
+            <input></input>
+            <input></input>
+            <input></input>
+    </p>
+    <p align="center">
+            <input></input>
+            <input></input>
+            <input></input>
+            <input></input>
+            <input></input>
+    </p>
+    <p align="center">
+            <input></input>
+            <input></input>
+            <input></input>
+            <input></input>
+            <input></input>
+    </p>
+    <p align="center">
+            <input></input> 
+            <input></input>
+            <input></input>
+            <input></input>
+            <input></input>
+    </p>
+    <script>
+        var sign
+        var stat=new Array(25)
+        function Initialize(){
+            var items=document.getElementsByTagName("input")
+            for(var i=0;i<items.length;i++){
+                var obj=items[i]
+                obj.type="button"
+                var sidelength=Math.min(document.body.scrollWidth/6,document.body.scrollHeight/6)
+                obj.style.width=obj.style.height=sidelength+'px'
+                obj.style.fontSize=sidelength/2+'px'
+                obj.id=i
+                obj.onclick=buttonclick
+                obj.value=" "
+            }
+            sign=1
+            for(var i=0;i<25;i++){
+                stat[i]=0
+            }
+        }
+        function display(){
+            for(var i=0;i<25;i++){
+                switch (stat[i]) {
+                    case 1:
+                        document.getElementById(i).value="×"
+                        break;
+                    case -1:
+                        document.getElementById(i).value="○"
+                        break;              
+                    default:
+                        break;
+                }
+            }
+        }
+        function buttonclick(){
+            item=window.event.srcElement
+            if(stat[item.id]==0){
+                stat[item.id]=sign
+                sign=-sign
+            }
+            display()
+        }
+        function adjustButtonSize(){
+            var items=document.getElementsByTagName("input")
+            for(var i=0;i<items.length;i++){
+                var obj=items[i]
+                sidelength=Math.min(document.body.scrollWidth/6,document.body.scrollHeight/6)
+                obj.style.width=obj.style.height=sidelength+'px'
+                obj.style.fontSize=sidelength/2+'px'
+            }
+        }
+        function Restart(){
+            window.location.reload()
+        }
+        !function(){
+            setInterval('adjustButtonSize()',100)
+        }();
+    </script>
+</body>
+</html>
