@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"></head>
+    <style>
+        *{
+            margin: 0;
+        }
+        body{
+            overflow: hidden;
+        }
+    </style>
+    <title>2048-Alpha</title>
+</head>
+<body onload="Initialize()">
+    <p>
+        <button id="RestartButton" onclick="Restart()">Restart</button>
+    </p>
+    <p align="center">
+        <input></input>
+        <input></input>
+        <input></input>
+        <input></input>
+        <input></input>
+        <input></input>
+    </p>
+    <p align="center">
+        <input></input>
+        <input></input>
+        <input></input>
+        <input></input>
+        <input></input>
+        <input></input>
+    </p>
+    <p align="center">
+        <input></input>
+        <input></input>
+        <input></input>
+        <input></input>
+        <input></input>
+        <input></input>
+    </p>
+    <p align="center">
+        <input></input>
+        <input></input>
+        <input></input>
+        <input></input>
+        <input></input>
+        <input></input>
+    </p>
+    <p align="center">
+        <input></input> 
+        <input></input>
+        <input></input>
+        <input></input>
+        <input></input>
+        <input></input>
+    </p>
+    <p align="center">
+        <input></input> 
+        <input></input>
+        <input></input>
+        <input></input>
+        <input></input>
+        <input></input>
+    </p>
+    <script>
+        var sign
+        var stat=new Array(36)
+        function Initialize(){
+            var items=document.getElementsByTagName("input")
+            for(var i=0;i<items.length;i++){
+                var obj=items[i]
+                obj.type="button"
+                var sidelength=Math.min(document.body.scrollWidth/7,document.body.scrollHeight/7)
+                obj.style.width=obj.style.height=sidelength+'px'
+                obj.style.fontSize=sidelength/2+'px'
+                obj.id=i
+                obj.value=" "
+                obj.disabled=true
+            }
+            for(var i=0;i<36;i++){
+                stat[i]=0
+            }
+            [2,3,12,18,17,23,32,33].forEach(id => {
+                document.getElementById(id).disabled=false
+                switch (id) {
+                case 2:
+                case 3:
+                    document.getElementById(id).onclick=up
+                    break;
+                case 12:
+                case 18:
+                    document.getElementById(id).onclick=left
+                     break;
+                case 17:
+                case 23:
+                    document.getElementById(id).onclick=right
+                    break;
+                case 32:
+                case 33:
+                    document.getElementById(id).onclick=down
+                    break;    
+                default:
+                    break;
+            }
+            });
+            Add()
+            Add()
+            display()
+        }
+        function up(){
+            moveaction('up')
+        }
+        function left(){
+            moveaction('left')
+        }
+        function right(){
+            moveaction('right')
+        }
+        function down(){
+            moveaction('down')
+        }
+        function moveByButton(){
+
+        }
+        function display(){
+            for(var i=0;i<36;i++){
+                if(stat[i]==0){
+                    document.getElementById(i).value=" "
+                }else{
+                    document.getElementById(i).value=stat[i]
+                }
+                
+            }
+        }
+        function adjustButtonSize(){
+            var items=document.getElementsByTagName("input")
+            for(var i=0;i<items.length;i++){
+                var obj=items[i]
+                sidelength=Math.min(document.body.scrollWidth/7,document.body.scrollHeight/7)
+                obj.style.width=obj.style.height=sidelength+'px'
+                obj.style.fontSize=sidelength/2+'px'
+            }
+        }
+        function Restart(){
+            Initialize()
+        }
+        function move(){
+            var edata=new Array(7)//empty data
+            j=0
+            for(var i=0;i<6;i++){
+                if(stat[arguments[i]]!=0){
+                    j=j+1
+                    edata[j]=stat[arguments[i]]
+                }
+            }
+            if(j==0){
+                return
+            }
+            edata[0]=j
+            var pdata=new Array(j)//processed data
+            var k=-1
+            for(var i=1;i<=j+1;i++){
+                if(edata[i]==edata[i+1]){
+                    k=k+1
+                    pdata[k]=edata[i]*2
+                    i=i+1
+                }else{
+                    k=k+1
+                    pdata[k]=edata[i]
+                }
+            }
+            for(var i=0;i<j;i++){
+                if(stat[arguments[i]]!=pdata[i]){
+                    flag=true
+                }
+            }
+            for(var i=0;i<6;i++){
+                stat[arguments[i]]=0
+            }
+            for(var i=0;i<k;i++){
+                stat[arguments[i]]=pdata[i]
+            }
+        }
+        var flag//To record whether the user has moved or not
+        function Add(){
+            var number=Math.pow(2,Math.floor(Math.random()*2)+1)
+            var position=Math.floor(Math.random()*36)
+            while(stat[position]!=0){
+                var position=Math.floor(Math.random()*36)
+            }
+            stat[position]=number
+            flag=false
+        }
+        function moveaction(){
+            switch (arguments[0]) {
+                case 'left':
+                    for(var i=0;i<36;i=i+6){
+                        move(i,i+1,i+2,i+3,i+4,i+5)
+                    }
+                    if(flag==true){Add()}
+                    break;
+                case 'up':
+                    for(var i=0;i<6;i++){
+                        move(i,i+6,i+12,i+18,i+24,i+30)
+                    }  
+                    if(flag==true){Add()}
+                    break;
+                case 'right':
+                    for(var i=5;i<36;i=i+6){
+                        move(i,i-1,i-2,i-3,i-4,i-5)
+                    }
+                    if(flag==true){Add()}
+                    break;
+                case 'down':
+                    for(var i=30;i<36;i++){
+                        move(i,i-6,i-12,i-18,i-24,i-30)
+                    }  
+                    if(flag==true){Add()}
+                    break;
+                default:
+                    break;
+            }
+            display()
+        }
+        document.onkeydown=function(e){
+            switch ((e||event).keyCode) {
+                case 37://left
+                    moveaction('left')
+                    break;
+                case 38://up
+                    moveaction('up')
+                    break;
+                case 39://right
+                    moveaction('right')
+                    break;
+                case 40://down
+                    moveaction('down')                  
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        !function(){
+            setInterval('adjustButtonSize()',100)
+        }();
+    </script>
+</body>
+</html>
