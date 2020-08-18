@@ -165,7 +165,7 @@ class vehicle {
   show(){
 			noStroke();
 			fill(227, 0, 34);
-			ellipse(this.position.x, this.position.y, 20);
+			ellipse(this.position.x, this.position.y, 50); //Size
 	}
 }
 
