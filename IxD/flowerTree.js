@@ -2,6 +2,9 @@ let gravity = 1;
 let timeUnit = 0.5;
 let windy = false;
 let landScape = null;
+
+let treecreated = false;
+let bloomed = false;
 //face
 let ease = 0.3;
 let video;
@@ -70,6 +73,7 @@ function draw() {
 		// Motion Detected
 		if (motionColor >= threshold) {
 			windy = true;
+			//bloomed = false;
 		}
 
 	}
@@ -98,7 +102,7 @@ function keyPressed() {
 function createTree() {
 	let strength = floor(random(8, 10));
 	landScape.addTree(new Tree(
-		rootPos = createVector(mouseX, windowHeight * 5 / 6),
+		rootPos = createVector(windowWidth / 2, windowHeight * 5 / 6),
 		totalHeight = windowHeight / 15 * strength,
 		depth = strength,
 		angleMean = -PI / 2,
@@ -148,8 +152,22 @@ function drawFace() {
 		detected = true;
 	}
 	if (detected) {
-		if (!landScape.checkBloom(windowWidth / 2)) {
+		if (!treecreated) {
+			treecreated = true;
 			createTree();
+		}
+		console.log(treecreated, bloomed);
+		if (treecreated & !bloomed) {
+			bloomed = true;
+			setTimeout(() => {
+				for (let tree of landScape.trees) {
+					pointToATree = true;
+					tree.bloom(() => {
+						return max(floor(randomGaussian(24, 12)), 0);
+					});
+				}
+			}, 5000);
+
 		}
 	}
 }
