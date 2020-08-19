@@ -16,7 +16,7 @@ let a = 0;
 let s = 0;
 //motion
 let previousFrame;
-let threshold = 10;
+let threshold = 15;
 threshold = threshold * threshold;
 let r1, g1, b1, r2, g2, b2, diff, motionColor;
 
