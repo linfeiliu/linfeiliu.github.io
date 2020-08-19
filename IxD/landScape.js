@@ -138,6 +138,9 @@ function LandScape(trees, flowers) {
       if (outOfScreen(this.flowers[i].pos)) {
         this.flowers.splice(i, 1);
       }
+      if (this.flowers[i].onGround) {
+        this.flowers.splice(i, 1);
+      }
     }
   };
 

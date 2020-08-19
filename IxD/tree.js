@@ -1,6 +1,6 @@
 function Tree(rootPos, totalHeight, depth, angleMean, angleRange,
-              asymmetry, divergence, precocity, limit, rubust, damping, lineColor,
-              bloomDepth, flowerRubust, flowerMass, flowerColor, flowerShape) {
+  asymmetry, divergence, precocity, limit, rubust, damping, lineColor,
+  bloomDepth, flowerRubust, flowerMass, flowerColor, flowerShape) {
   this.depth = depth;
   this.angleRange = angleRange;
   this.asymmetry = asymmetry;
@@ -31,23 +31,23 @@ function Tree(rootPos, totalHeight, depth, angleMean, angleRange,
     this.rootNode,
     this
   ));
-  
+
   this.display = () => {
     this.rootNode.display();
   };
-  
+
   this.displayFlower = () => {
     this.rootNode.displayFlower();
   };
-  
+
   this.sway = (wind) => {
     this.rootNode.sway(wind);
   };
-  
+
   this.grow = (speed) => {
     this.rootNode.grow(speed);
   };
-  
+
   this.bloom = (wait) => {
     this.rootNode.bud();
     this.rootNode.bloom(wait);

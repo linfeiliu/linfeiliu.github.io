@@ -11,7 +11,7 @@ function Flower(relativePos, node) {
   this.toBloom = -1;
   this.dropped = false;
   this.onGround = false;
-  
+
   this.display = () => {
     if (this.toBloom <= 0) {
       push();
@@ -27,14 +27,14 @@ function Flower(relativePos, node) {
       this.shape();
       pop();
     } else {
-      this.toBloom --;
+      this.toBloom--;
     }
   };
-  
+
   this.bloom = (wait) => {
     this.toBloom = wait();
   };
-  
+
   this.fall = () => {
     this.pos = createVector(
       this.pos.x * cos(this.node.angle) - this.pos.y * sin(this.node.angle),
@@ -48,7 +48,7 @@ function Flower(relativePos, node) {
     this.dropped = true;
     landScape.flowers.push(this);
   };
-  
+
   this.fly = (wind, airDamping, waterDamping, waterFlow, scatter, ground) => {
     if (!this.onGround) {
       if (this.pos.y > ground && random() > scatter) {
@@ -66,7 +66,7 @@ function Flower(relativePos, node) {
       );
     }
   };
-  
+
   this.update = () => {
     this.vel.add(p5.Vector.mult(this.acc, timeUnit));
     this.pos.add(p5.Vector.mult(this.vel, timeUnit));

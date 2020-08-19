@@ -16,7 +16,7 @@ let a = 0;
 let s = 0;
 //motion
 let previousFrame;
-let threshold = 25;
+let threshold = 10;
 threshold = threshold * threshold;
 let r1, g1, b1, r2, g2, b2, diff, motionColor;
 
@@ -69,11 +69,9 @@ function draw() {
 		// FUN SECTION
 		//no motion detected
 		windy = false;
-
 		// Motion Detected
 		if (motionColor >= threshold) {
 			windy = true;
-			//bloomed = false;
 		}
 
 	}
@@ -156,7 +154,6 @@ function drawFace() {
 			treecreated = true;
 			createTree();
 		}
-		console.log(treecreated, bloomed);
 		if (treecreated & !bloomed) {
 			bloomed = true;
 			setTimeout(() => {
@@ -166,6 +163,21 @@ function drawFace() {
 						return max(floor(randomGaussian(24, 12)), 0);
 					});
 				}
+				// grow automatically
+				setInterval(() => {
+					if (treecreated) {
+						if (bloomed) {
+							if (landScape.flowers.length < 10) {
+								for (let tree of landScape.trees) {
+									pointToATree = true;
+									tree.bloom(() => {
+										return max(floor(randomGaussian(24, 12)), 0);
+									});
+								}
+							}
+						}
+					}
+				}, 5000);
 			}, 5000);
 
 		}
