@@ -6,31 +6,29 @@ let landScape = null;
 let treecreated = false;
 let bloomed = false;
 //face
-let ease = 0.3;
-let video;
-let poseNet;
-let poses = [];
-let x = 0;
-let y = 0;
-let a = 0;
-let s = 0;
+var tracker;
+var ds = 2; // downsampling
+var w = 640,
+	h = 480;
 //motion
 let previousFrame;
 let threshold = 15;
 threshold = threshold * threshold;
 let r1, g1, b1, r2, g2, b2, diff, motionColor;
 
-
+let detected = false;
 function setup() {
 	createCanvas(windowWidth, windowHeight);
 	frameRate(24);
 	landScape = new LandScape([], []);
-	//face
 	video = createCapture(VIDEO);
-	video.size(width, height);
+	video.size(w / ds, h / ds);
 	video.hide();
-	poseNet = ml5.poseNet(video);
-	poseNet.on('pose', poseDetected);
+
+	// this is the tracker thing
+	tracker = new clm.tracker();
+	tracker.init(pModel);
+	tracker.start(video.elt);
 
 	//motion
 	prevFrame = createImage(video.width, video.height);
@@ -46,7 +44,43 @@ function draw() {
 	landScape.checkUp();
 	landScape.display();
 	//face
-	drawFace();
+	positions = tracker.getCurrentPosition();
+	console.log(positions);
+	if (positions.length == 71 & !detected) {
+		detected = true;
+		if (!treecreated) {
+			treecreated = true;
+			createTree();
+		}
+		if (treecreated & !bloomed) {
+			bloomed = true;
+			setTimeout(() => {
+				for (let tree of landScape.trees) {
+					pointToATree = true;
+					tree.bloom(() => {
+						return max(floor(randomGaussian(24, 12)), 0);
+					});
+				}
+				// grow automatically
+				setInterval(() => {
+					if (treecreated) {
+						if (bloomed) {
+							if (landScape.flowers.length < 10) {
+								for (let tree of landScape.trees) {
+									pointToATree = true;
+									tree.bloom(() => {
+										return max(floor(randomGaussian(24, 12)), 0);
+									});
+								}
+							}
+						}
+					}
+				}, 5000);
+			}, 5000);
+		}
+	} else {
+		detected = false;
+	}
 
 	//motion
 	//translate(width, 0); // move to far corner
@@ -137,51 +171,6 @@ function removeAll() {
 
 function outOfScreen(pos) {
 	return pos.x < 0 || pos.y < 0 || pos.x > windowWidth || pos.y > windowHeight;
-}
-
-//face
-function poseDetected(results) {
-	poses = results;
-}
-
-function drawFace() {
-	let detected = false;
-	for (let i = 0; i < poses.length; i++) {
-		detected = true;
-	}
-	if (detected) {
-		if (!treecreated) {
-			treecreated = true;
-			createTree();
-		}
-		if (treecreated & !bloomed) {
-			bloomed = true;
-			setTimeout(() => {
-				for (let tree of landScape.trees) {
-					pointToATree = true;
-					tree.bloom(() => {
-						return max(floor(randomGaussian(24, 12)), 0);
-					});
-				}
-				// grow automatically
-				setInterval(() => {
-					if (treecreated) {
-						if (bloomed) {
-							if (landScape.flowers.length < 10) {
-								for (let tree of landScape.trees) {
-									pointToATree = true;
-									tree.bloom(() => {
-										return max(floor(randomGaussian(24, 12)), 0);
-									});
-								}
-							}
-						}
-					}
-				}, 5000);
-			}, 5000);
-
-		}
-	}
 }
 
 //motion
