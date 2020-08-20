@@ -135,10 +135,10 @@ function createTree() {
 	let strength = floor(random(8, 10));
 	landScape.addTree(new Tree(
 		rootPos = createVector(windowWidth / 2, windowHeight * 5 / 6),
-		totalHeight = windowHeight / 15 * strength,
+		totalHeight = windowHeight * 5 / 6,
 		depth = strength,
 		angleMean = -PI / 2,
-		angleRange = PI / 3,
+		angleRange = PI / 2,
 		asymmetry = 0.2,
 		divergence = 0.8,
 		precocity = 0.25,
@@ -147,15 +147,15 @@ function createTree() {
 		damping = 0.5,
 		lineColor = [96, 96, 72,],
 		bloomDepth = 0,
-		flowerRubust = 0.5,
+		flowerRubust = 0.2,
 		flowerMass = () => {
-			return random(12, 24);
+			return random(30, 50);
 		},
 		flowerColor = () => {
 			return [
-				0,
-				255,
-				0,
+				random(192, 216),
+				random(96, 144),
+				random(64, 96),
 				random(0, 255),
 			];
 		},
