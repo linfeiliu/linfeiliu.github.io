@@ -65,6 +65,7 @@ function createTree() {
 
     default:
       treeBloom();
+      windy = true;
       return
       break;
   }
