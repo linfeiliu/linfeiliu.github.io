@@ -20,28 +20,58 @@ function draw() {
 }
 
 function mousePressed() {
-  if (!landScape.checkBloom(mouseX)) {
-    createTree();
-  }
+  createTree();
 }
 
 function keyPressed() {
   if (key == ' ') {
     windy = !windy;
-  } else {
+  } else if (key == 'b') {
+    treeBloom();
+  }
+  else {
     removeAll();
+  }
+}
+function treeBloom() {
+  for (let tree of landScape.trees) {
+    tree.bloom(() => {
+      return max(floor(randomGaussian(24, 12)), 0);
+    });
   }
 }
 
 function createTree() {
   let strength = floor(random(8, 10));
+  let x_position;
+  let tree_height;
+  switch (landScape.trees.length) {
+    case 0:
+      x_position = windowWidth * random(0.45, 0.55);
+      tree_height = 1;
+      break;
+
+    case 1:
+      x_position = windowWidth * random(0.15, 0.25);
+      tree_height = random(0.5, 0.7);
+      break;
+
+    case 2:
+      x_position = windowWidth * random(0.75, 0.85);
+      tree_height = random(0.5, 0.7);
+      break;
+
+    default:
+      return
+      break;
+  }
   landScape.addTree(new Tree(
-    rootPos = createVector(mouseX, windowHeight * 5 / 6),
-    totalHeight = windowHeight / 15 * strength,
+    rootPos = createVector(x_position, windowHeight * 5 / 6),
+    totalHeight = windowHeight * 5 / 6 * tree_height,
     depth = strength,
     angleMean = -PI / 2,
-    angleRange = PI / 3,
-    asymmetry = 0.2,
+    angleRange = PI / 2.5,
+    asymmetry = 0.15,
     divergence = 0.8,
     precocity = 0.25,
     limit = 0.2,
