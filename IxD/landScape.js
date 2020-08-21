@@ -71,12 +71,11 @@ function LandScape(trees, flowers) {
   this.generateClouds();
 
   this.display = () => {
-    background(this.bgColor);
     this.displayAll();
     push();
     // Shadow
-    // translate(0, this.ground * 2);
-    // scale(1, -1);
+    translate(0, this.ground * 2);
+    scale(1, -1);
     this.displayAll();
     pop();
     noStroke();

@@ -27,7 +27,9 @@ function Flower(relativePos, node) {
       this.shape();
       pop();
     } else {
-      this.toBloom--;
+      if (!windy) {
+        this.toBloom--;
+      }
     }
   };
 
