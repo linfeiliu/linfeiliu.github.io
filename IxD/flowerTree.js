@@ -212,10 +212,18 @@ function onLeave() {
   humaniconcolor = 'grey';
 }
 function mousePressed() {
-  if (currentstage == 0 || currentstage == 1) {
-    return
+  if (currentstage == 0) {
+    onEnter();
+  } else {
+    windy = !windy;
+    if (windy) {
+      wind1.loop();
+      wind2.play();
+    } else {
+      wind1.stop();
+      wind2.stop();
+    }
   }
-  createTree();
 }
 
 function keyPressed() {
