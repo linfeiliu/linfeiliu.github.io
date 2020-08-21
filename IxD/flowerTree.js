@@ -54,7 +54,7 @@ function setup() {
   glow = loadSound('glow.wav');
   bgm1 = loadSound('bgm1.mp3');
   wind1 = loadSound('wind1.mp3');
-  wind2 = loadSound('wind2.wav');
+  wind2 = loadSound('wind2.mp3');
 
 }
 
