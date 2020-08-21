@@ -64,6 +64,7 @@ function createTree() {
       break;
 
     default:
+      treeBloom();
       return
       break;
   }
