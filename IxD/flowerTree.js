@@ -45,20 +45,22 @@ function createTree() {
   let strength = floor(random(8, 10));
   let x_position;
   let tree_height;
+  let middle = 1;
   switch (landScape.trees.length) {
     case 0:
       x_position = windowWidth * random(0.45, 0.55);
-      tree_height = 1;
+      tree_height = 0.9;
+      middle = 3; // Bigger flowers.
       break;
 
     case 1:
       x_position = windowWidth * random(0.15, 0.25);
-      tree_height = random(0.5, 0.7);
+      tree_height = random(0.5, 0.6);
       break;
 
     case 2:
       x_position = windowWidth * random(0.75, 0.85);
-      tree_height = random(0.5, 0.7);
+      tree_height = random(0.5, 0.6);
       break;
 
     default:
@@ -71,7 +73,7 @@ function createTree() {
     depth = strength,
     angleMean = -PI / 2,
     angleRange = PI / 2.5,
-    asymmetry = 0.15,
+    asymmetry = 0.1,
     divergence = 0.8,
     precocity = 0.25,
     limit = 0.2,
@@ -79,9 +81,9 @@ function createTree() {
     damping = 0.5,
     lineColor = [96, 96, 72,],
     bloomDepth = 0,
-    flowerRubust = 0.5,
+    flowerRubust = 0.1,
     flowerMass = () => {
-      return random(12, 24);
+      return random(10, 100) * middle;
     },
     flowerColor = () => {
       return [

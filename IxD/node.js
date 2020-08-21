@@ -83,7 +83,7 @@ function Node(edgeLength, angle, father, tree) {
       let nutrition = 0.5 + direct * deltaNutrition;
       let childEdgeLength = this.targetEdgeLength / (0.5 + this.tree.limit / 2) * nutrition;
       if (this.father === this.tree.rootNode) {
-        childEdgeLength /= 2;
+        childEdgeLength /= 1.5;
       }
       if (childEdgeLength / this.tree.trunkLength > random(this.tree.limit)) {
         let childAngle = this.angle + direct * (1 - nutrition) * this.angleDelta;
