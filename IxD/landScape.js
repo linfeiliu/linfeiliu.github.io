@@ -74,8 +74,9 @@ function LandScape(trees, flowers) {
     background(this.bgColor);
     this.displayAll();
     push();
-    translate(0, this.ground * 2);
-    scale(1, -1);
+    // Shadow
+    // translate(0, this.ground * 2);
+    // scale(1, -1);
     this.displayAll();
     pop();
     noStroke();
