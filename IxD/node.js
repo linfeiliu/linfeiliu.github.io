@@ -59,6 +59,10 @@ function Node(edgeLength, angle, father, tree) {
       childNode.grow(speed);
     });
     if (!this.grown) {
+      if (windy) {
+        // Pause tree growth.
+        return
+      }
       this.edgeLength += speed;
       this.updateEdge();
       if (this.edgeLength >= this.targetEdgeLength * this.tree.precocity &&

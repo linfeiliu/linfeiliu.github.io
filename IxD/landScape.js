@@ -103,7 +103,7 @@ function LandScape(trees, flowers) {
 
   this.update = (wind) => {
     this.trees.forEach((tree) => {
-      tree.grow(2);
+      tree.grow(20); // Grow speed.
       tree.sway(wind);
     });
     this.flowers.forEach((flower) => {
