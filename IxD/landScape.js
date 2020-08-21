@@ -104,7 +104,7 @@ function LandScape(trees, flowers) {
 
   this.update = (wind) => {
     this.trees.forEach((tree) => {
-      tree.grow(20); // Grow speed.
+      tree.grow(1); // Grow speed.
       tree.sway(wind);
     });
     this.flowers.forEach((flower) => {
@@ -138,8 +138,7 @@ function LandScape(trees, flowers) {
     for (let i = this.flowers.length - 1; i >= 0; i--) {
       if (outOfScreen(this.flowers[i].pos)) {
         this.flowers.splice(i, 1);
-      }
-      if (this.flowers[i].onGround) {
+      } else if (this.flowers[i].onGround) {
         this.flowers.splice(i, 1);
       }
     }
