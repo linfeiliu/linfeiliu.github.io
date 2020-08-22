@@ -9,6 +9,8 @@ let glow;
 let bgm1;
 let wind1;
 let wind2;
+var SunY_change = 0;
+var moonY_change = 1;
 
 ////////////////////////////////////////////////////////////////////////
 //star variables
@@ -20,6 +22,8 @@ var speed = [];
 var numStar = 20;
 var SunY = 50;
 var moonY = 0;
+var SunY_change = 0;
+var moonY_change = 1;
 
 //wave variables
 var yOffset = 0;
@@ -75,16 +79,27 @@ function draw() {
     wind = createVector(random(5, 15), 0);
   }
   ////////////////////////////////////////////////////////////////////////
-  moonY = moonY - 0.5;
-  SunY = SunY + 0.5;
+  
+	if (SunY > 2.5*windowHeight){
+	SunY_change = 1;}
+	else if (SunY < -0.5*windowHeight){SunY_change = 0;}
+	if (SunY_change == 0){
+	SunY = SunY + 0.8;}
+	else if(SunY_change == 1){SunY = SunY - 0.8;}
 
-  //Day/night cycle background colours
-  var cycle = map(SunY * 0.7, 0, height, 0, 1);
-  var night = color(82, 77, 130);
-  var day = color(255, 205, 168);
-  var gradient = lerpColor(day, night, cycle);
+	if (moonY > 2.5*windowHeight){
+	moonY_change = 1;}
+	else if (moonY < -0.5*windowHeight){moonY_change = 0;}
+	if (moonY_change == 0){
+	moonY = moonY + 0.8;}
+	else if(moonY_change == 1){moonY = moonY - 0.8;}
+	//Day/night cycle background colours
+	var cycle = map(SunY*0.7, 0, height, 0, 1);
+	var night = color(82, 77, 130);
+	var day = color(255, 205, 168);
+	var gradient = lerpColor(day, night, cycle);
 
-  background(gradient);
+	background(gradient);
 
   //clouds have jitter movement in y-axis
 
@@ -115,7 +130,7 @@ function draw() {
     }
 
     //stars disppear during the day
-    var starOpacity = map(SunY * 0.3, 0, height - 100, 0, 255);
+    var starOpacity = map(SunY, 0, height, 0, 255);
 
     push();
     fill(255, starOpacity);
@@ -167,7 +182,7 @@ function draw() {
     fill(waterCol);
 
     //drawing waves from the top layer to the bottom
-    waves(height - 200 + (i * windowHeight / 7 / 4), height - 100 + (i * windowHeight / 7 / 4), i);
+    waves(height- windowHeight / 6+ ((i-1) * windowHeight / 6 / 4), height - windowHeight / 20 + ((i-1) * windowHeight / 6 / 4), i);
     pop();
   }
   ////////////////////////////////////////////////////////////////////////
@@ -341,9 +356,9 @@ function waves(minHeight, maxHeight, nStart) {
 
 /* Description - Drawing cloud shape with ellipses */
 function clouds(x, y) {
-  ellipse(x, y - 10, 30);
-  ellipse(x + 10, y - 10, 25);
-  ellipse(x + 10, y - 10 - 10, 30);
-  ellipse(x + 20, y - 10, 25);
-  ellipse(x + 30, y - 10, 25);
+  ellipse(x, y - 10, 40);
+  ellipse(x + 10, y - 10, 30);
+  ellipse(x + 10, y - 10 - 10, 40);
+  ellipse(x + 20, y - 10, 35);
+  ellipse(x + 30, y - 10, 30);
 }
