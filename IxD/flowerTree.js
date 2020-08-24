@@ -1,3 +1,12 @@
+// Speed control
+let stage1waitingtime = 3000;
+let treebloominterval = 10000;
+let createtreeinterval = 20000;
+let treegrowspeed = 1;
+let sun_moon_speed = 0.4;
+let cloudspeed = 0.4;
+let stage1glowspeed = 1 / 20;
+////////////////////////////////////////////////////////////////////////
 let gravity = 1;
 let timeUnit = 0.5;
 let windy = false;
@@ -32,7 +41,6 @@ var yOffset = 0;
 //cloud variables
 var cloudX = [];
 var cloudY = [];
-var cloudSpeed = [];
 ////////////////////////////////////////////////////////////////////////
 // thunder
 var xCoord1 = 0;
@@ -116,18 +124,18 @@ function draw() {
   }
   else if (SunY < -0.5 * windowHeight) { SunY_change = 0; }
   if (SunY_change == 0) {
-    SunY = SunY + 0.8;
+    SunY = SunY + sun_moon_speed;
   }
-  else if (SunY_change == 1) { SunY = SunY - 0.8; }
+  else if (SunY_change == 1) { SunY = SunY - sun_moon_speed; }
 
   if (moonY > 2.5 * windowHeight) {
     moonY_change = 1;
   }
   else if (moonY < -0.5 * windowHeight) { moonY_change = 0; }
   if (moonY_change == 0) {
-    moonY = moonY + 0.8;
+    moonY = moonY + sun_moon_speed;
   }
-  else if (moonY_change == 1) { moonY = moonY - 0.8; }
+  else if (moonY_change == 1) { moonY = moonY - sun_moon_speed; }
   //Day/night cycle background colours
   var cycle = map(SunY * 0.7, 0, height, 0, 1);
   var night = color(82, 77, 130);
@@ -180,9 +188,9 @@ function draw() {
   //drawing clouds
   for (var i = 0; i < 5; i++) {
     clouds(cloudX[i], cloudY[i]);
-    cloudX[i] = cloudX[i] + 0.5;
+    cloudX[i] = cloudX[i] + cloudspeed;
     //clouds have jitter movement in y-axis
-    cloudY[i] = cloudY[i] + random(-0.5, 0.5);
+    cloudY[i] = cloudY[i] + random(-cloudspeed, cloudspeed);
 
     //when clouds reach beyond edge of screen, clouds reset to original side
     if (cloudX[i] > width + 50) {
@@ -236,7 +244,7 @@ function draw() {
     return;
   }
   if (currentstage == 1) {
-    glow_radius = glow_radius + windowWidth / 10;
+    glow_radius += windowWidth * stage1glowspeed;
     transparency -= 5;
     if (transparency < 0) {
       currentstage = 2;
@@ -244,13 +252,13 @@ function draw() {
       createTree();
       setInterval(() => {
         createTree();
-      }, 10000);
+      }, createtreeinterval);
     }
   }
 
   setInterval(() => {
     treeBloom();
-  }, 5000);
+  }, treebloominterval);
   //thunder
   if (windy) {
     generate_thunder();
@@ -309,7 +317,7 @@ function onEnter() {
   glow.play();
   setTimeout(() => {
     currentstage = 1;
-  }, 3000);
+  }, stage1waitingtime);
 }
 function onLeave() {
   windy = true;
