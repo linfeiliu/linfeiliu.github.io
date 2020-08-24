@@ -22,8 +22,8 @@ function Flower(relativePos, node) {
         translate(this.relativePos.x, this.relativePos.y);
       }
       noStroke();
-      fill(this.colour);
       scale(this.radius, this.radius);
+      fill(this.colour);
       this.shape();
       pop();
     } else {

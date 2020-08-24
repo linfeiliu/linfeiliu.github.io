@@ -56,6 +56,8 @@ function LandScape(trees, flowers) {
   this.generateMountains();
 
   this.generateClouds = () => {
+    // Remove clouds.
+    return;
     for (let i = 0; i < 4; i++) {
       this.clouds.push(new Cloud(
         createVector(windowWidth * random(), windowHeight * random(0.1, 0.6)),
@@ -103,7 +105,7 @@ function LandScape(trees, flowers) {
 
   this.update = (wind) => {
     this.trees.forEach((tree) => {
-      tree.grow(1); // Grow speed.
+      tree.grow(100); // Grow speed.
       tree.sway(wind);
     });
     this.flowers.forEach((flower) => {

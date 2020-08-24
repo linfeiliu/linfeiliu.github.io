@@ -120,6 +120,7 @@ function Node(edgeLength, angle, father, tree) {
   this.sway = (wind) => {
     if (this.grown) {
       if (this.hasFlower &&
+        windy == true &&
         random(wind.mag()) > this.tree.flowerRubust * this.flower.mass) {
         this.flower.fall();
         this.hasFlower = false;

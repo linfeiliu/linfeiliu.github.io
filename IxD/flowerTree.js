@@ -2,16 +2,17 @@ let gravity = 1;
 let timeUnit = 0.5;
 let windy = false;
 let landScape = null;
-let humanicon;
 let currentstage = 0;
+let humanicon;
 // sound effects
 let glow;
 let bgm1;
 let wind1;
 let wind2;
+let thunder;
+
 var SunY_change = 0;
 var moonY_change = 1;
-
 ////////////////////////////////////////////////////////////////////////
 //star variables
 var starX = [10, 100, 3000, 40];
@@ -33,10 +34,33 @@ var cloudX = [];
 var cloudY = [];
 var cloudSpeed = [];
 ////////////////////////////////////////////////////////////////////////
+// thunder
+var xCoord1 = 0;
+var yCoord1 = 0;
+var xCoord2 = 0;
+var yCoord2 = 0;
+////////////////////////////////////////////////////////////////////////
+var httpRequest = new XMLHttpRequest();
+var state = "unknown";
+var userEntered = false;
+function invoke() {
+  httpRequest.open('GET', 'http://127.0.0.1:5000/read', true);
+  httpRequest.send();
+}
+
+
+
+
+
+
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   frameRate(24);
+
+  httpRequest.onreadystatechange = function () {
+    state = httpRequest.responseText;
+  }
   ////////////////////////////////////////////////////////////////////////
   moonY = 2 * windowHeight;
   //Initialise star variables
@@ -52,6 +76,9 @@ function setup() {
     cloudX[i] = random(width);
     cloudY[i] = 50 + i * 100;
   }
+  //thunder
+  xCoord2 = 0;
+  yCoord2 = height / 2;
   ////////////////////////////////////////////////////////////////////////
   landScape = new LandScape([], []);
   humanicon = loadImage('humanicon.png');
@@ -59,7 +86,7 @@ function setup() {
   bgm1 = loadSound('bgm1.mp3');
   wind1 = loadSound('wind1.mp3');
   wind2 = loadSound('wind2.mp3');
-
+  thunder = loadSound('thunder.wav');
 }
 
 
@@ -71,35 +98,43 @@ function setup() {
 
 
 let transparency = 255;
-let iconscale = 2;
+let iconscale = 0.5;
 let humaniconcolor = 'grey';
 function draw() {
+  noStroke();
   let wind = createVector(0, 0);
   if (windy) {
-    wind = createVector(random(5, 15), 0);
+    wind = createVector(random(300, 500), random(100, 300));
+  }
+  else {
+    wind = createVector(random(-50, 50), 0);
   }
   ////////////////////////////////////////////////////////////////////////
-  
-	if (SunY > 2.5*windowHeight){
-	SunY_change = 1;}
-	else if (SunY < -0.5*windowHeight){SunY_change = 0;}
-	if (SunY_change == 0){
-	SunY = SunY + 0.8;}
-	else if(SunY_change == 1){SunY = SunY - 0.8;}
 
-	if (moonY > 2.5*windowHeight){
-	moonY_change = 1;}
-	else if (moonY < -0.5*windowHeight){moonY_change = 0;}
-	if (moonY_change == 0){
-	moonY = moonY + 0.8;}
-	else if(moonY_change == 1){moonY = moonY - 0.8;}
-	//Day/night cycle background colours
-	var cycle = map(SunY*0.7, 0, height, 0, 1);
-	var night = color(82, 77, 130);
-	var day = color(255, 205, 168);
-	var gradient = lerpColor(day, night, cycle);
+  if (SunY > 2.5 * windowHeight) {
+    SunY_change = 1;
+  }
+  else if (SunY < -0.5 * windowHeight) { SunY_change = 0; }
+  if (SunY_change == 0) {
+    SunY = SunY + 0.8;
+  }
+  else if (SunY_change == 1) { SunY = SunY - 0.8; }
 
-	background(gradient);
+  if (moonY > 2.5 * windowHeight) {
+    moonY_change = 1;
+  }
+  else if (moonY < -0.5 * windowHeight) { moonY_change = 0; }
+  if (moonY_change == 0) {
+    moonY = moonY + 0.8;
+  }
+  else if (moonY_change == 1) { moonY = moonY - 0.8; }
+  //Day/night cycle background colours
+  var cycle = map(SunY * 0.7, 0, height, 0, 1);
+  var night = color(82, 77, 130);
+  var day = color(255, 205, 168);
+  var gradient = lerpColor(day, night, cycle);
+
+  background(gradient);
 
   //clouds have jitter movement in y-axis
 
@@ -182,7 +217,7 @@ function draw() {
     fill(waterCol);
 
     //drawing waves from the top layer to the bottom
-    waves(height- windowHeight / 6+ ((i-1) * windowHeight / 6 / 4), height - windowHeight / 20 + ((i-1) * windowHeight / 6 / 4), i);
+    waves(height - windowHeight / 6 + ((i - 1) * windowHeight / 6 / 4), height - windowHeight / 20 + ((i - 1) * windowHeight / 6 / 4), i);
     pop();
   }
   ////////////////////////////////////////////////////////////////////////
@@ -214,13 +249,65 @@ function draw() {
   setInterval(() => {
     treeBloom();
   }, 5000);
+  //thunder
+  if (windy) {
+    generate_thunder();
+  }
+
+  //Arduino web interface
+  //invoke();
+  /*console.log(state);
+  if (state == 'NBD') {
+      if (userEntered) {
+          userEntered = false;
+          onLeave();
+      } else {
+          //
+      }
+  } else if (state == 'MOV') {
+      if (userEntered) {
+          windy = true;
+          wind1.loop();
+          wind2.play();
+      }
+  } else if (state == 'STL') {
+      if (userEntered) {
+          windy = false;
+          wind1.stop();
+          wind2.stop();
+      } else {
+          userEntered = true;
+          onEnter();
+      }
+  }*/
 }
+
+function generate_thunder() {
+  for (let i = 0; i < 20; i++) {
+    xCoord1 = xCoord2;
+    yCoord1 = yCoord2;
+    xCoord2 = xCoord1 + int(random(-200, 200));
+    yCoord2 = yCoord1 + int(random(-100, 200));
+    strokeWeight(random(10, 30));
+    strokeJoin(MITER);
+    line(xCoord1, yCoord1, xCoord2, yCoord2);
+
+    if ((xCoord2 > width) || (xCoord2 < 0) || (yCoord2 > height) || (yCoord2 < 0)) {
+      //clear();
+      //drawBackground();
+      xCoord2 = int(random(0, width));
+      yCoord2 = 0;
+      stroke(255, 255, random(0, 255));
+    }
+  }
+}
+
 function onEnter() {
   humaniconcolor = 'white';
   glow.play();
   setTimeout(() => {
     currentstage = 1;
-  }, 3000);
+  }, 3);
 }
 function onLeave() {
   windy = true;
@@ -234,27 +321,40 @@ function mousePressed() {
     if (windy) {
       wind1.loop();
       wind2.play();
+      thunder.loop();
     } else {
       wind1.stop();
       wind2.stop();
+      thunder.stop();
     }
   }
 }
 
 function keyPressed() {
-  if (key == ' ') {
-    windy = !windy;
-    if (windy) {
+  if (key == 'm') {
+    if (state != 'm') {
+      state = 'm';
+      windy = true;
       wind1.loop();
       wind2.play();
-    } else {
+    }
+  } else if (key == 's') {
+    if (state != 's') {
+      state = 's';
+      windy = false;
       wind1.stop();
       wind2.stop();
     }
   } else if (key == 'b') {
-    treeBloom();
+    if (state != 'b') {
+      state = 'b';
+      treeBloom();
+    }
   } else if (key == 'e') {
-    onEnter();
+    if (state != 'e') {
+      state = 'e';
+      onEnter();
+    }
   }
 }
 function treeBloom() {
@@ -305,7 +405,7 @@ function createTree() {
     precocity = 0.25,
     limit = 0.2,
     rubust = 0.2,
-    damping = 0.5,
+    damping = 0.4,
     lineColor = [96, 96, 72,],
     bloomDepth = 0,
     flowerRubust = 0.01,
@@ -321,7 +421,11 @@ function createTree() {
       ];
     },
     flowerShape = () => {
-      ellipse(0, 0, 1.2, 1.2);
+      // Draw petals.
+      for (let i = 0; i < 5; i++) {
+        ellipse(0, -0.8, 1.2, 1.2);
+        rotate(radians(72));
+      }
     }
   ));
 }
