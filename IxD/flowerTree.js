@@ -98,8 +98,8 @@ function setup() {
 
 
 let transparency = 255;
-let iconscale = 0.5;
 let humaniconcolor = 'grey';
+let glow_radius = 0;
 function draw() {
   noStroke();
   let wind = createVector(0, 0);
@@ -223,18 +223,20 @@ function draw() {
   ////////////////////////////////////////////////////////////////////////
   fill([0, 0, 0, transparency]);
   rect(0, 0, windowWidth, windowHeight);
-  image(humanicon, windowWidth / 2 - humanicon.width / iconscale / 2, windowHeight / 2 - humanicon.width / iconscale / 2, humanicon.width / iconscale, humanicon.height / iconscale);
+  fill([gradient['levels'][0], gradient['levels'][1], gradient['levels'][2], transparency]);
+  ellipse(windowWidth / 2, windowHeight / 2, glow_radius, glow_radius)
+  image(humanicon, windowWidth / 2 - windowHeight / 3, windowHeight / 2 - windowHeight / 3, windowHeight * 2 / 3, windowHeight * 2 / 3);
   if (humaniconcolor == 'grey') {
     tint([100, 100, 100, transparency]);
   }
   else {
-
-    tint([255, 255, 2555, transparency]);
+    tint([255, 255, 255, transparency]);
   }
   if (currentstage == 0) {
     return;
   }
   if (currentstage == 1) {
+    glow_radius = glow_radius + windowWidth / 10;
     transparency -= 5;
     if (transparency < 0) {
       currentstage = 2;
@@ -307,7 +309,7 @@ function onEnter() {
   glow.play();
   setTimeout(() => {
     currentstage = 1;
-  }, 3);
+  }, 3000);
 }
 function onLeave() {
   windy = true;
