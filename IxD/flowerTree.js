@@ -3,16 +3,24 @@ let stage1waitingtime = 3000;
 let treebloominterval = 10000;
 let createtreeinterval = 20000;
 let treegrowspeed = 1;
-let sun_moon_speed = 0.4;
+let sun_moon_speed = 0;
 let cloudspeed = 0.4;
 let stage1glowspeed = 1 / 20;
+let daxiao = 1;
+let enter_speed = 10;
 ////////////////////////////////////////////////////////////////////////
 let gravity = 1;
 let timeUnit = 0.5;
+let leave = false;
 let windy = false;
+let windy1 = false;
+let windypp = 1;
+let windyqq = 0;
 let landScape = null;
 let currentstage = 0;
 let humanicon;
+let logo;
+let thanks;
 // sound effects
 let glow;
 let bgm1;
@@ -30,7 +38,7 @@ var radius = [];
 var maxRadius = [];
 var speed = [];
 var numStar = 20;
-var SunY = 50;
+var SunY = -100;
 var moonY = 0;
 var SunY_change = 0;
 var moonY_change = 1;
@@ -90,6 +98,8 @@ function setup() {
   ////////////////////////////////////////////////////////////////////////
   landScape = new LandScape([], []);
   humanicon = loadImage('humanicon.png');
+  logo = loadImage('logo1.png');
+  thanks = loadImage('thanks.png');
   glow = loadSound('glow.wav');
   bgm1 = loadSound('bgm1.mp3');
   wind1 = loadSound('wind1.mp3');
@@ -106,19 +116,22 @@ function setup() {
 
 
 let transparency = 255;
+let transparency1 = 0;
 let humaniconcolor = 'grey';
 let glow_radius = 0;
 function draw() {
   noStroke();
   let wind = createVector(0, 0);
-  if (windy) {
+  if (windy && windy1) {
     wind = createVector(random(300, 500), random(100, 300));
   }
   else {
-    wind = createVector(random(-50, 50), 0);
+    wind = createVector(random(-30, 40), 0);
   }
   ////////////////////////////////////////////////////////////////////////
-
+  if (currentstage == 2){
+    sun_moon_speed = 0.4;
+  }
   if (SunY > 2.5 * windowHeight) {
     SunY_change = 1;
   }
@@ -229,23 +242,25 @@ function draw() {
     pop();
   }
   ////////////////////////////////////////////////////////////////////////
-  fill([0, 0, 0, transparency]);
+  fill([gradient['levels'][0], gradient['levels'][1], gradient['levels'][2], transparency-30]);
   rect(0, 0, windowWidth, windowHeight);
-  fill([gradient['levels'][0], gradient['levels'][1], gradient['levels'][2], transparency]);
-  ellipse(windowWidth / 2, windowHeight / 2, glow_radius, glow_radius)
-  image(humanicon, windowWidth / 2 - windowHeight / 3, windowHeight / 2 - windowHeight / 3, windowHeight * 2 / 3, windowHeight * 2 / 3);
+  
+  image(humanicon, (windowWidth / 2 - windowHeight*daxiao / 3),(windowHeight / 2 - windowHeight *daxiao/ 3), (windowHeight * 2 / 3)*daxiao, (windowHeight * 2 / 3)*daxiao);
   if (humaniconcolor == 'grey') {
-    tint([100, 100, 100, transparency]);
+    tint([100, 100, 100, transparency-30]);
   }
   else {
     tint([255, 255, 255, transparency]);
   }
+  fill( [247, 247, 180, transparency-100]);
+  ellipse(windowWidth / 2, windowHeight / 2, glow_radius, glow_radius)
   if (currentstage == 0) {
     return;
   }
   if (currentstage == 1) {
-    glow_radius += windowWidth * stage1glowspeed;
-    transparency -= 5;
+    glow_radius += windowWidth * stage1glowspeed*5*enter_speed/4;
+    transparency -= enter_speed;
+    daxiao -=0.01/3*enter_speed;
     if (transparency < 0) {
       currentstage = 2;
       bgm1.loop();
@@ -260,7 +275,7 @@ function draw() {
     treeBloom();
   }, treebloominterval);
   //thunder
-  if (windy) {
+  if (windy1) {
     generate_thunder();
   }
 
@@ -270,6 +285,7 @@ function draw() {
   if (state == 'NBD') {
       if (userEntered) {
           userEntered = false;
+          leave == true;
           onLeave();
       } else {
           //
@@ -290,6 +306,9 @@ function draw() {
           onEnter();
       }
   }*/
+  if(leave == true){
+    onLeave();
+  }
 }
 
 function generate_thunder() {
@@ -321,14 +340,46 @@ function onEnter() {
 }
 function onLeave() {
   windy = true;
-  humaniconcolor = 'grey';
+  windy1 = true;
+  if (currentstage == 2) {
+    transparency1 += 1;
+    daxiao = 0.5;
+    fill([0,0,0, transparency1]);
+    rect(-10, -10, windowWidth+10, windowHeight+10);
+    image(logo, (windowWidth / 2 - windowHeight*daxiao / 3),(2*windowHeight ), (windowHeight * 2 / 3)*daxiao, (windowHeight * 2 / 3)*daxiao);
+    tint([255, 255, 255, 255]);
+    image(logo, (windowWidth / 2 - windowHeight*daxiao / 3),(windowHeight / 2 - windowHeight *daxiao/ 2), (windowHeight * 2 / 3)*daxiao, (windowHeight * 2 / 3)*daxiao);
+    tint([255, 255, 255, 255]);
+    if (transparency1 > 150) {
+      currentstage = 1;
+      //bgm1.loop();
+    }
+  }
+  if (currentstage == 1) {
+    transparency1 += 1;
+    fill([0,0,0, transparency1]);
+    rect(0, 0, windowWidth, windowHeight);
+    image(logo, (windowWidth / 2 - windowHeight*daxiao / 3),(windowHeight / 2 - windowHeight *daxiao/ 2), (windowHeight * 2 / 3)*daxiao, (windowHeight * 2 / 3)*daxiao);
+    tint([255, 255, 255, 255]);
+    image(thanks, (windowWidth / 2 - windowHeight*daxiao / 3),(windowHeight / 2 ), (windowHeight * 2 / 3)*daxiao, (windowHeight * 2 / 3)*daxiao);
+    tint([255, 255, 255, 255]);
+  }
 }
 function mousePressed() {
   if (currentstage == 0) {
     onEnter();
   } else {
-    windy = !windy;
-    if (windy) {
+    if(windyqq == 1){
+      windy1 = false;
+      windy = false;
+      windyqq = 0;
+    } else{
+      windy1 = true;
+      windy = true;
+      windyqq = 1;
+    }
+    
+    if (windy1) {
       wind1.loop();
       wind2.play();
       thunder.loop();
@@ -344,14 +395,14 @@ function keyPressed() {
   if (key == 'm') {
     if (state != 'm') {
       state = 'm';
-      windy = true;
+      windy1 = true;
       wind1.loop();
       wind2.play();
     }
   } else if (key == 's') {
     if (state != 's') {
       state = 's';
-      windy = false;
+      windy1 = false;
       wind1.stop();
       wind2.stop();
     }
@@ -365,15 +416,21 @@ function keyPressed() {
       state = 'e';
       onEnter();
     }
+  }else if (key == 'l') {
+    if (state != 'l') {
+      state = 'l';
+      onLeave();
+    }
   }
 }
 function treeBloom() {
-  if (windy) {
+  if (windy1) {
     return;
   }
+  
   for (let tree of landScape.trees) {
     tree.bloom(() => {
-      return max(floor(randomGaussian(24, 12)), 0) * 10;
+      return max(floor(randomGaussian(36, 24)), 0) * 10;
     });
   }
 }
@@ -386,22 +443,27 @@ function createTree() {
   switch (landScape.trees.length) {
     case 0:
       x_position = windowWidth * random(0.45, 0.55);
-      tree_height = 0.9;
+      tree_height = 0.95;
       middle = 2; // Bigger flowers.
       break;
 
     case 1:
       x_position = windowWidth * random(0.15, 0.25);
-      tree_height = random(0.5, 0.6);
+      tree_height = random(0.6, 0.8);
       break;
 
     case 2:
       x_position = windowWidth * random(0.75, 0.85);
-      tree_height = random(0.5, 0.6);
+      tree_height = random(0.6, 0.8);
       break;
 
     default:
-      return
+      if(windypp ==1){
+        windy = true;
+        windypp = 0;
+      } else {
+      windy = false;
+      windypp = 1}
       break;
   }
   landScape.addTree(new Tree(
@@ -418,7 +480,7 @@ function createTree() {
     damping = 0.4,
     lineColor = [96, 96, 72,],
     bloomDepth = 0,
-    flowerRubust = 0.01,
+    flowerRubust = 0.6,
     flowerMass = () => {
       return random(10, 100) * middle;
     },
