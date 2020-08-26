@@ -7,7 +7,7 @@ let sun_moon_speed = 0.4;
 let cloudspeed = 0.4;
 let stage1glowspeed = 1 / 20;
 let endscreenwaitingtime = 50000;
-let speed_up = 10;
+let speed_up = 1;
 ////////////////////////////////////////////////////////////////////////
 // rain variables
 var acceleration = 1;
@@ -531,14 +531,14 @@ function createTree() {
     bloomDepth = 0,
     flowerRubust = 0.01,
     flowerMass = () => {
-      return random(100, 500) * middle;
+      return random(100, 200) * middle;
     },
     flowerColor = () => {
       return [
         random(217, 257),
         random(70, 110),
         random(81, 121),
-        ,
+        255,
       ];
     },
     flowerShape = () => {
@@ -548,7 +548,7 @@ function createTree() {
         rotate(radians(72));
       }
       // Draw pistil.
-      fill([254, 215, 26,]);
+      fill([254, 215, 26, 255]);
       ellipse(0, 0, 1, 1);
     }
   ));
