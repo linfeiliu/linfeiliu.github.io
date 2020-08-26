@@ -8,10 +8,12 @@ let cloudspeed = 0.4;
 let stage1glowspeed = 1 / 20;
 let endscreenwaitingtime = 5000;
 let speed_up = 1;
+let left_hand_detected = false;
+let right_hand_detected = false;
 ////////////////////////////////////////////////////////////////////////
 // rain variables
 var acceleration = 1;
-var nDrops = 500;
+var nDrops = 200;
 var rain = [];
 ////////////////////////////////////////////////////////////////////////
 let gravity = 1;
@@ -20,6 +22,10 @@ let windy = false;
 let landScape = null;
 let currentstage = 0;
 let humanicon;
+let humanicon0;
+let humanicon1;
+let humanicon2;
+let humanicon3;
 let logo;
 // sound effects
 let glow;
@@ -27,6 +33,7 @@ let bgm1;
 let wind;
 let thunder;
 let raining;
+let dingdong;
 
 var SunY_change = 0;
 var moonY_change = 1;
@@ -107,13 +114,18 @@ function setup() {
   yCoord2 = height / 2;
   ////////////////////////////////////////////////////////////////////////
   landScape = new LandScape([], []);
-  humanicon = loadImage('humanicon.png');
+  humanicon0 = loadImage('humanicon0.png');
+  humanicon1 = loadImage('humanicon1.png');
+  humanicon2 = loadImage('humanicon2.png');
+  humanicon3 = loadImage('humanicon3.png');
+  humanicon = humanicon0;
   glow = loadSound('glow.wav');
   bgm1 = loadSound('bgm1.mp3');
   wind = loadSound('wind.mp3');
   thunder = loadSound('thunder.wav');
   raining = loadSound('raining.mp3');
   logo = loadImage('logo.png');
+  dingdong = loadSound('dingdong.mp3');
 }
 
 
@@ -134,7 +146,7 @@ function draw() {
     wind = createVector(random(300, 500), random(100, 300));
   }
   else {
-    wind = createVector(random(-50, 50), 0);
+    wind = createVector(random(-10, 10), 0);
   }
   ////////////////////////////////////////////////////////////////////////
 
@@ -152,8 +164,9 @@ function draw() {
 
   //when clouds reach beyond edge of screen, clouds reset to original side
 
-  fill(247, 247, 200);
-  ellipse(windowWidth - 360, windowHeight / 9, windowHeight / 6);
+  // Draw moon
+  //fill(247, 247, 200);
+  //ellipse(windowWidth - 360, windowHeight / 9, windowHeight / 6);
 
   //fill(255);
   //ellipse(360, moonY, 200);
@@ -220,8 +233,8 @@ function draw() {
   for (var i = 0; i < 4; i++) {
     push();
     //"i" is used for the colour gradient
-    var from = color(0, 0, 95 - (i * 10), 95);
-    var to = color(0, 0, 95 - (i * 5), 95);
+    var from = color(0, 0, 95 - (i * 10), 150);
+    var to = color(0, 0, 95 - (i * 5), 150);
     var waterCol = lerpColor(from, to, cycle); //cycle is already mapped from 0 to 1
     fill(waterCol);
 
@@ -234,6 +247,7 @@ function draw() {
   if (windy) {
     createRain();
   }
+
   ////////////////////////////////////////////////////////////////////////
   if (currentstage == 3 || currentstage == 4) {
     fill([0, 0, 0, transparency - 100]);
@@ -251,11 +265,12 @@ function draw() {
       }
     } 1
   }
+
   if (currentstage == 0 || currentstage == 1) {
     fill([0, 0, 0, transparency - 100]);
     rect(0, 0, windowWidth, windowHeight);
     fill([255, 249, 196, transparency]);
-    ellipse(windowWidth / 2, windowHeight * 2 / 6, glow_radius, glow_radius)
+    ellipse(windowWidth / 2, windowHeight * 1.5 / 6, glow_radius, glow_radius)
     image(humanicon, windowWidth / 2 - windowHeight / 3, windowHeight / 2 - windowHeight / 3, windowHeight * 2 / 3, windowHeight * 2 / 3);
     if (humaniconcolor == 'grey') {
       tint([204, 255, 255, transparency]);
@@ -283,7 +298,6 @@ function draw() {
   setInterval(() => {
     treeBloom();
   }, treebloominterval);
-
 
   //thunder
   //if (windy) {
@@ -348,7 +362,7 @@ function Drop() {
   this.initY();
 
 
-  this.length = random() * 10;
+  this.length = random() * 5;
   this.speed = random() * 10;
 
   this.drawAndDrop = function () {
@@ -358,8 +372,8 @@ function Drop() {
 
   this.draw = function () {
     stroke(255, 255, 255, 200);
-    strokeWeight(random(1, 5));
-    line(this.x, this.y, this.x, this.y + this.length);
+    strokeWeight(random(1, 3));
+    line(this.x, this.y, this.x + this.length * random(), this.y + this.length);
   };
 
   this.drop = function () {
@@ -429,8 +443,21 @@ function mousePressed() {
     }
   }
 }
-
 function keyPressed() {
+  if (currentstage == 0) {
+    if (key == '0') {
+      humanicon = humanicon0;
+    } else if (key == '1') {
+      humanicon = humanicon1;
+      dingdong.play();
+    } else if (key == '2') {
+      humanicon = humanicon2;
+      dingdong.play();
+    } else if (key == '3') {
+      humanicon = humanicon3;
+      dingdong.play();
+    }
+  }
   if (key == 'm' && state != 'm') {
     if (currentstage != 0 && currentstage != 1) {
       state = 'm';
@@ -528,7 +555,7 @@ function createTree() {
     limit = 0.2,
     rubust = 0.2,
     damping = 0.4,
-    lineColor = [80, 39, 21,],
+    lineColor = [121, 85, 72,],
     bloomDepth = 0,
     flowerRubust = 0.01,
     flowerMass = () => {
