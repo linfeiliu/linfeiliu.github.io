@@ -6,12 +6,12 @@ let treegrowspeed = 1;
 let sun_moon_speed = 0.4;
 let cloudspeed = 0.4;
 let stage1glowspeed = 1 / 20;
-let endscreenwaitingtime = 50000;
+let endscreenwaitingtime = 5000;
 let speed_up = 1;
 ////////////////////////////////////////////////////////////////////////
 // rain variables
 var acceleration = 1;
-var nDrops = 1000;
+var nDrops = 500;
 var rain = [];
 ////////////////////////////////////////////////////////////////////////
 let gravity = 1;
@@ -124,7 +124,7 @@ function setup() {
 
 
 
-let transparency = 255;
+let transparency = 200;
 let humaniconcolor = 'grey';
 let glow_radius = 0;
 function draw() {
@@ -138,27 +138,11 @@ function draw() {
   }
   ////////////////////////////////////////////////////////////////////////
 
-  if (SunY > 2.5 * windowHeight) {
-    SunY_change = 1;
-  }
-  else if (SunY < -0.5 * windowHeight) { SunY_change = 0; }
-  if (SunY_change == 0) {
-    SunY = SunY + sun_moon_speed;
-  }
-  else if (SunY_change == 1) { SunY = SunY - sun_moon_speed; }
-
-  if (moonY > 2.5 * windowHeight) {
-    moonY_change = 1;
-  }
-  else if (moonY < -0.5 * windowHeight) { moonY_change = 0; }
-  if (moonY_change == 0) {
-    moonY = moonY + sun_moon_speed;
-  }
-  else if (moonY_change == 1) { moonY = moonY - sun_moon_speed; }
+  moonY = windowHeight / 5;
   //Day/night cycle background colours
   var cycle = map(SunY * 0.7, 0, height, 0, 1);
-  var night = color(82, 77, 130);
-  var day = color(255, 205, 168);
+  var night = color(10, 18, 70, 200);
+  var day = color(10, 18, 70, 200);
   var gradient = lerpColor(day, night, cycle);
 
   background(gradient);
@@ -168,11 +152,11 @@ function draw() {
 
   //when clouds reach beyond edge of screen, clouds reset to original side
 
-  fill(247, 247, 156);
-  ellipse(windowWidth - 360, SunY, 200);
+  fill(247, 247, 200);
+  ellipse(windowWidth - 360, windowHeight / 9, windowHeight / 6);
 
-  fill(255);
-  ellipse(360, moonY, 200);
+  //fill(255);
+  //ellipse(360, moonY, 200);
 
   //create numStars amount of stars
   for (var i = 0; i < numStar; i++) {
@@ -192,12 +176,13 @@ function draw() {
     }
 
     //stars disppear during the day
-    var starOpacity = map(SunY, 0, height, 0, 255);
+    var starOpacity = 255;
 
     push();
     fill(255, starOpacity);
     strokeWeight(2);
     stroke(255, starOpacity - 200);
+    //star(starX[i], starY[i], radius[i] / 2, radius[i] * 1.5, 5);
     ellipse(starX[i], starY[i], radius[i] * 1.5);
     pop();
   }
@@ -223,7 +208,7 @@ function draw() {
   //Subtle colour placed ontop of the whole sketch to give it atmosphere
   //have to change the color from the original to have an opacity level
   night = color(82, 77, 130, 60);
-  day = color(255, 205, 168, 60);
+  day = color(82, 77, 130, 60);
   gradient = lerpColor(day, night, cycle);
   fill(gradient);
   rect(0, 0, width, height);
@@ -234,12 +219,9 @@ function draw() {
   //////////////////////////////////////////////////////////////////////// water
   for (var i = 0; i < 4; i++) {
     push();
-
-    //mapping water colour to mouse, to match time of day
-    colorMode(HSB, 360, 100, 100, 100);
     //"i" is used for the colour gradient
-    var from = color(209, 26, 95 - (i * 10), 95);
-    var to = color(178, 10, 95 - (i * 5), 95);
+    var from = color(0, 0, 95 - (i * 10), 95);
+    var to = color(0, 0, 95 - (i * 5), 95);
     var waterCol = lerpColor(from, to, cycle); //cycle is already mapped from 0 to 1
     fill(waterCol);
 
@@ -272,14 +254,14 @@ function draw() {
   if (currentstage == 0 || currentstage == 1) {
     fill([0, 0, 0, transparency - 100]);
     rect(0, 0, windowWidth, windowHeight);
-    fill([gradient['levels'][0], gradient['levels'][1], gradient['levels'][2], transparency - 100]);
-    ellipse(windowWidth / 2, windowHeight / 2, glow_radius, glow_radius)
+    fill([255, 249, 196, transparency]);
+    ellipse(windowWidth / 2, windowHeight * 2 / 6, glow_radius, glow_radius)
     image(humanicon, windowWidth / 2 - windowHeight / 3, windowHeight / 2 - windowHeight / 3, windowHeight * 2 / 3, windowHeight * 2 / 3);
     if (humaniconcolor == 'grey') {
-      tint([150, 150, 150, transparency]);
+      tint([204, 255, 255, transparency]);
     }
     else {
-      tint([255, 255, 255, transparency]);
+      tint([255, 249, 196, transparency]);
     }
     if (currentstage == 0) {
       return;
@@ -335,6 +317,20 @@ function draw() {
       }
   }*/
 }
+function star(x, y, radius1, radius2, npoints) {
+  let angle = TWO_PI / npoints;
+  let halfAngle = angle / 2.0;
+  beginShape();
+  for (let a = 0; a < TWO_PI; a += angle) {
+    let sx = x + cos(a) * radius2;
+    let sy = y + sin(a) * radius2;
+    vertex(sx, sy);
+    sx = x + cos(a + halfAngle) * radius1;
+    sy = y + sin(a + halfAngle) * radius1;
+    vertex(sx, sy);
+  }
+  endShape(CLOSE);
+}
 function createRain() {
   rain.forEach(function (d) {
     d.drawAndDrop();
@@ -362,7 +358,7 @@ function Drop() {
 
   this.draw = function () {
     stroke(255, 255, 255, 200);
-    strokeWeight(10);
+    strokeWeight(random(1, 5));
     line(this.x, this.y, this.x, this.y + this.length);
   };
 
@@ -447,17 +443,22 @@ function keyPressed() {
       }
     }
   } else if (key == 's' && state != 's') {
-    if (state != 's') {
-      state = 's';
-      windy = false;
-      wind.stop();
-      raining.stop();
-      rain = [];
+    if (humaniconcolor != 'white') { //not entererd
+      state = 'e';
+      onEnter();
+    } else {
+      if (state != 's') {
+        state = 's';
+        windy = false;
+        wind.stop();
+        raining.stop();
+        rain = [];
+      }
     }
   } else if (key == 'b') {
     treeBloom();
   } else if (key == 'e' && state != 'e') {
-    if (currentstage == 0) {
+    if (humaniconcolor != 'white') {
       state = 'e';
       onEnter();
     }
@@ -531,14 +532,14 @@ function createTree() {
     bloomDepth = 0,
     flowerRubust = 0.01,
     flowerMass = () => {
-      return random(100, 200) * middle;
+      return random(80, 200) * middle;
     },
     flowerColor = () => {
       return [
-        random(217, 257),
-        random(70, 110),
-        random(81, 121),
         255,
+        random(111, 236),
+        random(0, 178),
+        170,
       ];
     },
     flowerShape = () => {
@@ -548,8 +549,8 @@ function createTree() {
         rotate(radians(72));
       }
       // Draw pistil.
-      fill([254, 215, 26, 255]);
-      ellipse(0, 0, 1, 1);
+      fill([160, 64, 0, 255]);
+      ellipse(0, 0, 0.5, 0.5);
     }
   ));
 }

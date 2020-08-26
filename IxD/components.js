@@ -7,7 +7,7 @@ function Mountain(pos, shape, shadow, sunnyColor, shadowColor) {
   
   this.display = () => {
     noStroke();
-    fill(sunnyColor);
+    fill(10, 18, 70, 200);
     triangle(
       this.pos.x - this.shape.x / 2,
       this.pos.y,
@@ -16,7 +16,7 @@ function Mountain(pos, shape, shadow, sunnyColor, shadowColor) {
       this.pos.x + this.shape.x / 2 - this.shadow / 2,
       this.pos.y
     );
-    fill(shadowColor);
+    fill(5, 15, 50, 200);
     triangle(
       this.pos.x + this.shape.x / 2,
       this.pos.y,
