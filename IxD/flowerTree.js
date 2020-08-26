@@ -252,7 +252,7 @@ function draw() {
   if (currentstage == 3 || currentstage == 4) {
     fill([0, 0, 0, transparency - 100]);
     rect(0, 0, windowWidth, windowHeight);
-    image(logo, windowWidth / 2 - windowHeight / 3, windowHeight / 2 - windowHeight / 3, windowHeight * 2 / 3, windowHeight * 2 / 3);
+    image(logo, windowWidth / 2 - logo.width / 2, windowHeight / 2 - logo.height * 2 / 3, windowHeight * 2 / 3, windowHeight * 2 / 3);
     tint([255, 255, 255, transparency]);
     if (transparency < 255) {
       transparency += 5;
@@ -263,7 +263,7 @@ function draw() {
           location.reload();
         }, endscreenwaitingtime);
       }
-    } 1
+    }
   }
 
   if (currentstage == 0 || currentstage == 1) {
@@ -298,6 +298,10 @@ function draw() {
   setInterval(() => {
     treeBloom();
   }, treebloominterval);
+
+  setInterval(() => {
+    currentstage = 3;
+  }, 6 * 20000);
 
   //thunder
   //if (windy) {
