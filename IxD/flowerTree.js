@@ -527,7 +527,7 @@ function createTree() {
     limit = 0.2,
     rubust = 0.2,
     damping = 0.4,
-    lineColor = [132, 90, 51,],
+    lineColor = [80, 39, 21,],
     bloomDepth = 0,
     flowerRubust = 0.01,
     flowerMass = () => {
@@ -535,10 +535,10 @@ function createTree() {
     },
     flowerColor = () => {
       return [
-        random(192, 216),
-        random(96, 144),
-        random(64, 96),
-        255,
+        random(217, 257),
+        random(70, 110),
+        random(81, 121),
+        ,
       ];
     },
     flowerShape = () => {
@@ -548,7 +548,7 @@ function createTree() {
         rotate(radians(72));
       }
       // Draw pistil.
-      fill([200, 51, 73, 255]);
+      fill([254, 215, 26,]);
       ellipse(0, 0, 1, 1);
     }
   ));
